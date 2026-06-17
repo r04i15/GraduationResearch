@@ -36,6 +36,36 @@ while True:
 
             h, w, _ = img.shape
 
+            nose = face_landmarks.landmark[1]
+            left_eye = face_landmarks.landmark[33]
+            right_eye = face_landmarks.landmark[263]
+
+            nose_x = nose.x
+            left_x = left_eye.x
+            right_x = right_eye.x
+
+            center = (left_x + right_x) / 2
+
+            if nose_x < center - 0.02:
+                direction = "RIGHT"
+
+            elif nose_x > center + 0.02:
+                direction = "LEFT"
+
+            else:
+                direction = "CENTER"
+
+            cv2.putText(
+                img,
+                direction,
+                (50, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 255, 0),
+                2
+            )
+            print(direction)
+
             # 全ランドマークに番号表示
             for idx, landmark in enumerate(face_landmarks.landmark):
 
@@ -56,35 +86,6 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == 27:
         break
-
-nose = face_landmarks.landmark[1]
-left_eye = face_landmarks.landmark[33]
-right_eye = face_landmarks.landmark[263]
-
-nose_x = nose.x
-left_x = left_eye.x
-right_x = right_eye.x
-
-center = (left_x + right_x) / 2
-
-if nose_x < center - 0.02:
-    direction = "RIGHT"
-
-elif nose_x > center + 0.02:
-    direction = "LEFT"
-
-else:
-    direction = "CENTER"
-
-cv2.putText(
-    img,
-    direction,
-    (50, 50),
-    cv2.FONT_HERSHEY_SIMPLEX,
-    1,
-    (0, 255, 0),
-    2
-)
 
 cap.release()
 cv2.destroyAllWindows()
