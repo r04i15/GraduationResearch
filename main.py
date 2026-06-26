@@ -59,12 +59,7 @@ while True:
             REFERENCE_DISTANCE = 50
             REFERENCE_FACE_WIDTH = 250
 
-            distance_cm = (
-                REFERENCE_FACE_WIDTH *
-                REFERENCE_DISTANCE /
-                face_width
-            )
-
+            # 顔向き判定
             nose_x = nose.x
             left_x = left_eye.x
             right_x = right_eye.x
@@ -89,35 +84,57 @@ while True:
                 (0, 255, 0),
                 2
             )
+
+            # 距離推定
+            if direction == "CENTER":
+                distance_cm = (
+                    REFERENCE_FACE_WIDTH *
+                    REFERENCE_DISTANCE /
+                    face_width
+                )
+
+                cv2.putText(
+                    img,
+                    f"Distance: {distance_cm:.1f} cm",
+                    (50, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (255, 0, 0),
+                    2
+                )
+            else:
+                cv2.putText(
+                    img,
+                    "Distance: ---",
+                    (50,100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0,0,255),
+                    2
+                )
+
+
             if direction != previous_direction:
                 print(direction)
                 previous_direction = direction
 
-            cv2.putText(
-                img,
-                f"Distance: {distance_cm:.1f} cm",
-                (50, 100),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (255, 0, 0),
-                2
-        )
+        
 
             # 全ランドマークに番号表示
-            for idx, landmark in enumerate(face_landmarks.landmark):
+            # for idx, landmark in enumerate(face_landmarks.landmark):
 
-                x = int(landmark.x * w)
-                y = int(landmark.y * h)
+            #     x = int(landmark.x * w)
+            #     y = int(landmark.y * h)
 
-                cv2.putText(
-                    img,
-                    str(idx),
-                    (x, y),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.3,
-                    (0, 255, 0),
-                    1
-                )
+            #     cv2.putText(
+            #         img,
+            #         str(idx),
+            #         (x, y),
+            #         cv2.FONT_HERSHEY_SIMPLEX,
+            #         0.3,
+            #         (0, 255, 0),
+            #         1
+            #     )
 
     cv2.imshow("Face Mesh Landmark Number", img)
 
