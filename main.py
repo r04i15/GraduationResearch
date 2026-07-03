@@ -39,11 +39,16 @@ while True:
 
             h, w, _ = img.shape
 
+            # ランドマーク
             nose = face_landmarks.landmark[1]
             left_eye = face_landmarks.landmark[33]
             right_eye = face_landmarks.landmark[263]
             left_cheek = face_landmarks.landmark[234]
             right_cheek = face_landmarks.landmark[454]
+            top_lip = face_landmarks.landmark[13]
+            bottom_lip = face_landmarks.landmark[14]
+            left_mouth = face_landmarks.landmark[61]
+            right_mouth = face_landmarks.landmark[291]
 
             x1 = int(left_cheek.x * w)
             y1 = int(left_cheek.y * h)
@@ -113,12 +118,43 @@ while True:
                     2
                 )
 
+            # 口の縦幅
+            mouth_height = abs(bottom_lip.y - top_lip.y)
+
+            # 口の横幅
+            mouth_width = abs(right_mouth.x - left_mouth.x)
+
+            # 顔との距離の影響を受けにくい比率
+            mouth_ratio = mouth_height / mouth_width
+
+            if mouth_ratio > 0.10:
+                mouth_state = "OPEN"
+            else:
+                mouth_state = "CLOSE"
 
             if direction != previous_direction:
                 print(direction)
                 previous_direction = direction
+                
+            cv2.putText(
+                img,
+                f"Mouth: {mouth_state}",
+                (50, 150),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 0, 255),
+                2
+            )
 
-        
+            cv2.putText(
+                img,
+                f"Ratio: {mouth_ratio:.3f}",
+                (50, 200),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                (255, 255, 0),
+                2
+            )
 
             # 全ランドマークに番号表示
             # for idx, landmark in enumerate(face_landmarks.landmark):
